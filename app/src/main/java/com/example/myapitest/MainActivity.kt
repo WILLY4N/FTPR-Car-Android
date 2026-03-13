@@ -2,6 +2,7 @@ package com.example.myapitest
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapitest.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -36,7 +37,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
-        // TODO
+        binding.swipeRefreshLayout.setOnRefreshListener {
+//            binding.swipeRefreshLayout.isRefreshing = false
+        }
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.addCta.setOnClickListener {
+            // TODO
+        }
     }
 
     private fun requestLocationPermission() {
