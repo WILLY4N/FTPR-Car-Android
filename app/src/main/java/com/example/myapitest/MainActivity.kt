@@ -1,9 +1,19 @@
 package com.example.myapitest
 
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.myapitest.adapter.ItemAdapter
 import com.example.myapitest.databinding.ActivityMainBinding
+import com.example.myapitest.model.Car
+import com.example.myapitest.service.RetrofitClient
+import com.example.myapitest.service.safeApiCall
+import com.example.myapitest.service.Result
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -51,6 +61,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchItems() {
-        // TODO
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = safeApiCall {
+                RetrofitClient.apiService.getCars()
+            }
+
+            withContext(Dispatchers.Main) {
+                binding.swipeRefreshLayout.isRefreshing = false
+                when (result) {
+                    is Result.Success -> handleOnSucces(result.data)
+                    is Result.Error -> {
+                        // TODO
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleOnSucces(cars: List<Car>) {
+        binding.recyclerView.adapter = ItemAdapter(cars)
     }
 }
