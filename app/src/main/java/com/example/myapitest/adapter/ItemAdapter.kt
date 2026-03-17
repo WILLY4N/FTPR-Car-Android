@@ -11,7 +11,8 @@ import com.example.myapitest.model.Car
 import com.example.myapitest.ui.loadUrl
 
 class ItemAdapter(
-    private val cars: List<Car>
+    private val cars: List<Car>,
+    private val onItemClick: (Car) -> Unit,
 ) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
     class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView = view.findViewById<ImageView>(R.id.image)
@@ -35,6 +36,9 @@ class ItemAdapter(
         holder.licenseTextView.text = car.licence
         holder.yearTextView.text = car.year
         holder.imageView.loadUrl(car.imageUrl)
+        holder.itemView.setOnClickListener {
+            onItemClick(car)
+        }
     }
 
     override fun getItemCount(): Int  = cars.size
