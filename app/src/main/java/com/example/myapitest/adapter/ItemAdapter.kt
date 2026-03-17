@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapitest.R
 import com.example.myapitest.model.Car
+import com.example.myapitest.ui.loadUrl
 
 class ItemAdapter(
     private val cars: List<Car>
@@ -33,6 +34,7 @@ class ItemAdapter(
         holder.modelTextView.text = car.name
         holder.licenseTextView.text = car.licence
         holder.yearTextView.text = car.year
+        holder.imageView.loadUrl(car.imageUrl)
     }
 
     override fun getItemCount(): Int  = cars.size
