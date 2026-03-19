@@ -26,7 +26,7 @@ data class ItemCar(
     val year: String,
     val name: String,
     val licence: String,
-    val place: ItemPlace
+    val place: ItemPlace?
 )
 
 /**
