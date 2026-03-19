@@ -46,6 +46,9 @@ class ItemDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+        if(::item.isInitialized){
+            loadItemInGoogleMap()
+        }
     }
 
     private fun setupView() {
@@ -92,6 +95,7 @@ class ItemDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun loadItemInGoogleMap(){
+        if(!::mMap.isInitialized) return
         item.value.place?.let {
             binding.googleMapContent.visibility = View.VISIBLE
             val place = LatLng(it.lat, it.long)
