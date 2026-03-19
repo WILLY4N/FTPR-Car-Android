@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapitest.adapter.ItemAdapter
 import com.example.myapitest.databinding.ActivityMainBinding
 import com.example.myapitest.model.Car
+import com.example.myapitest.model.ItemCar
 import com.example.myapitest.service.RetrofitClient
 import com.example.myapitest.service.safeApiCall
 import com.example.myapitest.service.Result
@@ -143,7 +144,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleOnSucces(cars: List<Car>) {
+    private fun handleOnSucces(cars: List<ItemCar>) {
         binding.recyclerView.adapter = ItemAdapter(cars) { item ->
             val intent = ItemDetailActivity.newIntent(this, item.id)
             startActivity(intent)
