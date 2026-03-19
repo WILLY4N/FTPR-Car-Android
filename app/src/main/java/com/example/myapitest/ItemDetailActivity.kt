@@ -58,6 +58,10 @@ class ItemDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }
+        binding.deleteCTA.setOnClickListener {
+            deleteCar()
+        }
+
     }
 
     private fun loadItem() {
@@ -111,6 +115,27 @@ class ItemDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 )
             )
         }
+    }
+
+    private fun deleteCar() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = safeApiCall { RetrofitClient.apiService.deleteCar(item.id) }
+
+            withContext(Dispatchers.Main) {
+                when (result) {
+                    is Result.Success -> handleSuccessDelete()
+                    is Result.Error -> {
+                        Toast.makeText(this@ItemDetailActivity, "Erro ao deletar Veículo", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleSuccessDelete() {
+        Toast.makeText(this, "Veículo deletado com sucesso", Toast.LENGTH_LONG)
+            .show()
+        finish()
     }
 
 
