@@ -2,10 +2,10 @@ package com.example.myapitest
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.location.Location
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,11 +14,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapitest.adapter.ItemAdapter
 import com.example.myapitest.databinding.ActivityMainBinding
-import com.example.myapitest.model.Car
 import com.example.myapitest.model.ItemCar
+import com.example.myapitest.service.Result
 import com.example.myapitest.service.RetrofitClient
 import com.example.myapitest.service.safeApiCall
-import com.example.myapitest.service.Result
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
@@ -70,6 +69,9 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.addCta.setOnClickListener {
 
+        }
+        binding.message.setOnClickListener {
+            fetchItems()
         }
     }
 
@@ -136,18 +138,30 @@ class MainActivity : AppCompatActivity() {
                 binding.swipeRefreshLayout.isRefreshing = false
                 when (result) {
                     is Result.Success -> handleOnSucces(result.data)
-                    is Result.Error -> {
-                        // TODO
-                    }
+                    is Result.Error -> handleOnError()
                 }
             }
         }
     }
 
     private fun handleOnSucces(cars: List<ItemCar>) {
+        if (cars.isEmpty()) {
+            binding.message.visibility = View.VISIBLE
+            binding.message.setText(R.string.empty_list)
+            binding.recyclerView.visibility = View.GONE
+            return
+        }
+        binding.message.visibility = View.GONE
+        binding.recyclerView.visibility = View.VISIBLE
         binding.recyclerView.adapter = ItemAdapter(cars) { item ->
             val intent = ItemDetailActivity.newIntent(this, item.id)
             startActivity(intent)
         }
+    }
+
+    private fun handleOnError() {
+        binding.message.visibility = View.VISIBLE
+        binding.message.setText(R.string.generical_error)
+        binding.recyclerView.visibility = View.GONE
     }
 }
