@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">MyApiTest - WILLYAN PATRYKC</string>
+    <string name="sucess_update">Veículo editado com sucesso</string>
+    <string name="error_update">Erro ao editar Veículo</string>
+    <string name="error_delete">Erro ao deletar Veículo</string>
+    <string name="error_fetch_item">Erro ao carregar item</string>
+    <string name="sucess_delete">Veículo deletado com sucesso</string>
 </resources>

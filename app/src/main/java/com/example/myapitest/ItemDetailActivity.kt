@@ -5,12 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.myapitest.databinding.ActivityItemDetailBinding
 import com.example.myapitest.model.Car
+import com.example.myapitest.model.ItemCar
 import com.example.myapitest.service.RetrofitClient
 import com.example.myapitest.service.safeApiCall
 import kotlinx.coroutines.CoroutineScope
@@ -61,6 +59,9 @@ class ItemDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.deleteCTA.setOnClickListener {
             deleteCar()
         }
+        binding.editCTA.setOnClickListener {
+            editCar()
+        }
 
     }
 
@@ -77,7 +78,7 @@ class ItemDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                         handleSuccess()
                     }
                     is Result.Error -> {
-                        Toast.makeText(this@ItemDetailActivity, "Erro ao carregar item", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ItemDetailActivity, R.string.error_fetch_item, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -125,7 +126,30 @@ class ItemDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 when (result) {
                     is Result.Success -> handleSuccessDelete()
                     is Result.Error -> {
-                        Toast.makeText(this@ItemDetailActivity, "Erro ao deletar Veículo", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ItemDetailActivity, R.string.error_delete, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun editCar(){
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = safeApiCall {
+                RetrofitClient.apiService.updateCar(
+                    item.id,
+                    item.value.copy(licence = binding.licence.text.toString())
+                )
+            }
+
+            withContext(Dispatchers.Main) {
+                when (result) {
+                    is Result.Success -> {
+                        Toast.makeText(this@ItemDetailActivity, R.string.sucess_update, Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+                    is Result.Error -> {
+                        Toast.makeText(this@ItemDetailActivity, R.string.error_update, Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -133,7 +157,7 @@ class ItemDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun handleSuccessDelete() {
-        Toast.makeText(this, "Veículo deletado com sucesso", Toast.LENGTH_LONG)
+        Toast.makeText(this, R.string.sucess_delete, Toast.LENGTH_LONG)
             .show()
         finish()
     }
