@@ -7,4 +7,7 @@
     <string name="sucess_delete">Veículo deletado com sucesso</string>
     <string name="generical_error">Erro desconhecido. Clique para tentar novamente.</string>
     <string name="empty_list">Nenhum item disponível.</string>
+    <string name="required_field">Campo obrigatório</string>
+    <string name="error_add_item">Erro ao adicionar veículo</string>
+    <string name="sucess_add_item">Veículo adicionado com sucesso.</string>
 </resources>
