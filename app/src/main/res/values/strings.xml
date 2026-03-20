@@ -10,4 +10,5 @@
     <string name="required_field">Campo obrigatório</string>
     <string name="error_add_item">Erro ao adicionar veículo</string>
     <string name="sucess_add_item">Veículo adicionado com sucesso.</string>
+    <string name="location_permission_denied">Permissão de localização negada.</string>
 </resources>
