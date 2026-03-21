@@ -11,4 +11,5 @@
     <string name="error_add_item">Erro ao adicionar veículo</string>
     <string name="sucess_add_item">Veículo adicionado com sucesso.</string>
     <string name="location_permission_denied">Permissão de localização negada.</string>
+    <string name="error_upload_image">Falha ao realizar Upload para o Firebase</string>
 </resources>

@@ -6,6 +6,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -33,15 +35,18 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.security.SecureRandom
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
 class NewItemActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -51,6 +56,8 @@ class NewItemActivity : AppCompatActivity(), OnMapReadyCallback {
     private var selectedMarker: Marker? = null
 
     private lateinit var imageUri: Uri
+
+    private var imageFile: File? = null
 
     private val cameraLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -146,9 +153,9 @@ class NewItemActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
-        val imageFile = File.createTempFile(imageFileName, ".jpg", storageDir)
+        imageFile = File.createTempFile(imageFileName, ".jpg", storageDir)
 
-        return FileProvider.getUriForFile(this, "com.example.myapitest.fileprovider", imageFile)
+        return FileProvider.getUriForFile(this, "com.example.myapitest.fileprovider", imageFile!!)
 
     }
 
@@ -188,10 +195,14 @@ class NewItemActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun saveCar() {
         if (!validateForm()) return
 
+        uploadImageToFirebase()
+
+    }
+
+    private fun saveData() {
         val itemPlace = selectedMarker?.position?.let {
             ItemPlace(it.latitude, it.longitude)
         }
-
         CoroutineScope(Dispatchers.IO).launch {
             val id = SecureRandom().nextInt().toString()
             val itemCar = ItemCar(
@@ -207,10 +218,47 @@ class NewItemActivity : AppCompatActivity(), OnMapReadyCallback {
             withContext(Dispatchers.Main) {
                 when (result) {
                     is Result.Success -> handleOnSuccess()
-                    is Result.Error  -> handleOnError()
+                    is Result.Error -> handleOnError()
                 }
             }
         }
+    }
+
+    private fun uploadImageToFirebase(){
+        imageFile?.let{
+            val storageRef = FirebaseStorage.getInstance().reference
+            val imageRef = storageRef.child("images/${UUID.randomUUID()}.jpg")
+
+            val baos = ByteArrayOutputStream()
+            val imageBitmap = BitmapFactory.decodeFile(it.path)
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val data = baos.toByteArray()
+
+            onLoadImage(true)
+
+            imageRef.putBytes(data)
+                .addOnFailureListener {
+                    onLoadImage(false)
+                    Toast.makeText(
+                        this,
+                        R.string.error_upload_image,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                .addOnSuccessListener {
+                    onLoadImage(false)
+                    imageRef.downloadUrl.addOnSuccessListener { uri ->
+                        binding.imageUrl.setText(uri.toString())
+                        saveData()
+                    }
+                }
+        }
+    }
+
+    fun onLoadImage(isLoading: Boolean) {
+        binding.loadImageProgress.visibility = if(isLoading) View.VISIBLE else View.GONE
+        binding.takePictureCta.isEnabled = !isLoading
+        binding.saveCta.isEnabled = !isLoading
     }
 
     private fun handleOnError() {
