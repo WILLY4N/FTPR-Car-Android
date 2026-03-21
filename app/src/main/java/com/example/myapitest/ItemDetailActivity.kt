@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapitest.databinding.ActivityItemDetailBinding
 import com.example.myapitest.model.Car
-import com.example.myapitest.model.ItemCar
 import com.example.myapitest.service.RetrofitClient
 import com.example.myapitest.service.safeApiCall
 import kotlinx.coroutines.CoroutineScope

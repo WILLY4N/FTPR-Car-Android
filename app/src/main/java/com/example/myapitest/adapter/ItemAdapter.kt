@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapitest.R
-import com.example.myapitest.model.Car
 import com.example.myapitest.model.ItemCar
 import com.example.myapitest.ui.loadUrl
 

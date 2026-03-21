@@ -13,6 +13,4 @@ class DateConverters {
     fun dateToTimeStamp(date: Date?): Long? {
         return date?.time
     }
-
-
 }
