@@ -12,4 +12,9 @@
     <string name="sucess_add_item">Veículo adicionado com sucesso.</string>
     <string name="location_permission_denied">Permissão de localização negada.</string>
     <string name="error_upload_image">Falha ao realizar Upload para o Firebase</string>
+    <string name="hint_cellphone">+55 11 912345678</string>
+    <string name="code_brazil">+55</string>
+    <string name="send_sms">Enviar SMS</string>
+    <string name="hint_verify_sms">123456</string>
+    <string name="verify_sms">Verificar SMS</string>
 </resources>
